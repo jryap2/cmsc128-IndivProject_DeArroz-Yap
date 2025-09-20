@@ -6,7 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect("ymongodb+srv://dbUser:<db_password>@cluster0.t6kb4u4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
+mongoose.connect("mongodb+srv://dbUser:<db_password>@cluster0.t6kb4u4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
 
 const TaskSchema = new mongoose.Schema({
   title: String,
