@@ -6,7 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect("your-mongodb-atlas-connection-string");
+mongoose.connect("ymongodb+srv://dbUser:<db_password>@cluster0.t6kb4u4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
 
 const TaskSchema = new mongoose.Schema({
   title: String,
@@ -17,7 +17,6 @@ const TaskSchema = new mongoose.Schema({
 
 const Task = mongoose.model("Task", TaskSchema);
 
-// Routes
 app.get("/tasks", async (req, res) => {
   res.json(await Task.find());
 });
