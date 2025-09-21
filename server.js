@@ -52,7 +52,7 @@ app.delete("/tasks/:id", async (req, res) => {
     }
 });
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static('public'));
 
 app.use((req, res) => {
     res.sendFile(path.join(__dirname, "public", "index.html"));
