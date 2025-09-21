@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>De Arroz & Yap - To Do List</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://kit.fontawesome.com/d4673b8040.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header>
+        <div class="menu-container">
+            <h1 id="menu-title">Menu</h1>
+            <div class="menu-content">
+                <button class="add-task-btn1">
+                    <i class="fa-solid fa-circle-plus fa-lg" style="color: #fb5a04;"></i>
+                    Add task
+                </button>
+                <nav>
+                    <ul>
+                        <li><a href="#" data-target="inbox"><i class="fa-solid fa-inbox"></i>Inbox</a></li>
+                        <li><a href="#" data-target="today-tasks"><i class="fa-regular fa-clock" style="color: #e3c145;"></i>Today</a></li>
+                        <li><a href="#" data-target="upcoming-tasks"><i class="fa-solid fa-angles-up" style="color: #f934c4;"></i>Upcoming</a></li>
+                        <li><a href="#" data-target="completed-tasks"><i class="fa-solid fa-circle-check" style="color: #27d343;"></i>Completed</a></li>
+                        <li><a href="#" data-target="deleted-tasks"><i class="fa-solid fa-trash" style="color: #f3121d;"></i>Deleted tasks</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="settings-display">
+            <i class="fa-solid fa-filter fa-lg" style="color: #6B6C7E;"></i>
+            <i class="fa-regular fa-circle fa-lg" style="color: #6B6C7E;"></i>
+        </div>
+
+        <section id="inbox" class="content-section">
+            <h2>Inbox</h2>
+            <p>Inbox is your go-to spot for quick task entry. Clear your <br>mind now, organize when you're ready.</br></p>
+            <button class="add-task-btn2"><i class="fa-solid fa-plus"></i>Add Task</button>
+        </section>
+
+        <section id="today-tasks" class="content-section" hidden>
+            <h2>Today</h2>
+            <p>You're all done for today! Enjoy the rest of your day and <br>come back whenever a task needs to be done!</br></p>
+            <button class="add-task-btn2"><i class="fa-solid fa-plus"></i>Add Task</button>
+        </section>
+
+        <section id="upcoming-tasks" class="content-section" hidden>
+            <h2>Upcoming</h2>
+            <p>Tasks with future due dates will appear here.</p>
+            <button class="add-task-btn2"><i class="fa-solid fa-plus"></i>Add Task</button>
+        </section>
+
+        <section id="completed-tasks" class="content-section" hidden>
+            <h2>Completed tasks</h2>
+            <p>You don't have any completed tasks yet.</p>
+        </section>
+
+        <section id="deleted-tasks" class="content-section" hidden>
+            <h2>Deleted tasks</h2>
+            <p>You don't have any deleted tasks yet.</p>
+        </section>
+    </main>
+
+    <div id="taskModal" class="modal" hidden>
+        <div class="modal-content">
+            <input type="text" id="task-title" placeholder="Enter task title..">
+            <textarea id="task-desc" placeholder="description"></textarea>
+
+            <div class="modal-options">
+                <button type="button" id="task-date-btn"><i class="fa-regular fa-calendar"></i> Due Date</button>
+                <input type="datetime-local" id="task-date" style="display: none;">
+
+                <button type="button" id="task-priority-btn"><i class="fa-regular fa-flag"></i> Priority</button>
+                <div id="priority-menu" class="priority-menu" style="display: none;">
+                    <button data-value="High">High</button>
+                    <button data-value="Mid">Mid</button>
+                    <button data-value="Low">Low</button>
+                </div>
+                <input type="hidden" id="task-priority" value="Mid">
+            </div>
+
+            <div class="modal-actions">
+                <button class="cancel-btn">Cancel</button>
+                <button class="save-task-btn">Add Task</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
