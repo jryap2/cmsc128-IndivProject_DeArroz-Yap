@@ -11,52 +11,59 @@ mongoose.connect("mongodb+srv://dbUser:bumblebee23@cluster0.t6kb4u4.mongodb.net/
 
 const TaskSchema = new mongoose.Schema({
   title: String,
-  dueDate: String,
-  done: Boolean,
+  description: String,
+  date: String,
+  priority: String,
+});
+
+const CompletedTaskSchema = new mongoose.Schema({
+  title: String,
+  description: String,
+  date: String,
+  priority: String,
+});
+
+const DeletedTaskSchema = new mongoose.Schema({
+  title: String,
+  description: String,
+  date: String,
   priority: String,
 });
 
 const Task = mongoose.model("Task", TaskSchema);
+const CompletedTask = mongoose.model("CompletedTask", CompletedTaskSchema);
+const DeletedTask = mongoose.model("DeletedTask", DeletedTaskSchema);
 
-app.get("/tasks", async (req, res) => {
-  res.json(await Task.find());
+// GET all tasks (inbox, completed, deleted)
+app.get("/api/tasks", async (req, res) => {
+  const tasks = await Task.find();
+  const completed_tasks = await CompletedTask.find();
+  const deleted_tasks = await DeletedTask.find();
+  res.json({ tasks, completed_tasks, deleted_tasks });
 });
 
-app.post("/tasks", async (req, res) => {
-  const task = new Task(req.body);
-  await task.save();
-  res.json(task);
-});
+// POST all tasks (bulk overwrite)
+app.post("/api/tasks", async (req, res) => {
+  const { tasks, completed_tasks, deleted_tasks } = req.body;
 
-app.patch("/tasks/:id", async (req, res) => {
-    try {
-        const task = await Task.findByIdAndUpdate(
-            req.params.id,
-            { done: req.body.done },
-            { new: true }
-        );
-        if (!task) return res.status(404).json({ message: "Task not found" });
-        res.json(task);
-    } catch (err) {
-        res.status(500).json({ message: "Error updating task", error: err });
-    }
-});
+  // Clear collections
+  await Task.deleteMany({});
+  await CompletedTask.deleteMany({});
+  await DeletedTask.deleteMany({});
 
-app.delete("/tasks/:id", async (req, res) => {
-    try {
-        const task = await Task.findByIdAndDelete(req.params.id);
-        if (!task) return res.status(404).json({ message: "Task not found" });
-        res.json({ message: "Task deleted" });
-    } catch (err) {
-        res.status(500).json({ message: "Error deleting task", error: err });
-    }
+  // Insert new data
+  if (Array.isArray(tasks)) await Task.insertMany(tasks);
+  if (Array.isArray(completed_tasks)) await CompletedTask.insertMany(completed_tasks);
+  if (Array.isArray(deleted_tasks)) await DeletedTask.insertMany(deleted_tasks);
+
+  res.json({ status: "ok" });
 });
 
 app.use(express.static('public'));
 
 app.use((req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-const PORT = process.env.PORT || 5000;  
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

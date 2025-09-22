@@ -44,6 +44,40 @@ document.addEventListener("DOMContentLoaded", function() {
     var selectedTasks = new Set();
     var currentSection = "inbox";
 
+    // ------------------ SERVER INTEGRATION ------------------
+    function loadTasksFromServer() {
+        fetch('/api/tasks')
+            .then(res => res.json())
+            .then(data => {
+                tasks = data.tasks || [];
+                completed_tasks = data.completed_tasks || [];
+                deleted_tasks = data.deleted_tasks || [];
+                renderCurrentSection(currentSection);
+            })
+            .catch(err => {
+                console.error('Failed to load tasks:', err);
+            });
+    }
+
+    function saveTasksToServer() {
+        fetch('/api/tasks', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                tasks,
+                completed_tasks,
+                deleted_tasks
+            })
+        }).catch(err => {
+            console.error('Failed to save tasks:', err);
+        });
+    }
+
+    function updateTasksAndSave() {
+        saveTasksToServer();
+        renderCurrentSection(currentSection);
+    }
+
     // ------------------ HELPER FUNCTIONS ------------------
     function resetForm() {
         var t = document.getElementById("task-title");
@@ -374,17 +408,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 tasks.push({ title, description: desc, date, priority });
             }
 
-            // Close modal and refresh view
+            // Save to server and refresh view
+            updateTasksAndSave();
+
             modal.classList.remove("show");
             modal.hidden = true;
             closeAllPopups();
             resetForm();
-            
-            // Re-render current section
-            var activeSection = document.querySelector(".content-section.active");
-            if (activeSection) {
-                renderCurrentSection(activeSection.id);
-            }
         });
     }
 
@@ -671,7 +701,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     }
                 });
                 exitSelectionMode();
-                renderCurrentSection(currentSection);
+                updateTasksAndSave();
             });
         }
         
@@ -750,11 +780,7 @@ document.addEventListener("DOMContentLoaded", function() {
             var task = tasks[index];
             completed_tasks.push(task);
             tasks.splice(index, 1);
-            
-            var activeSection = document.querySelector(".content-section.active");
-            if (activeSection) {
-                renderCurrentSection(activeSection.id);
-            }
+            updateTasksAndSave();
         }
     }
 
@@ -764,11 +790,7 @@ document.addEventListener("DOMContentLoaded", function() {
             var task = sourceArray[index];
             deleted_tasks.push(task);
             sourceArray.splice(index, 1);
-            
-            var activeSection = document.querySelector(".content-section.active");
-            if (activeSection) {
-                renderCurrentSection(activeSection.id);
-            }
+            updateTasksAndSave();
         }
     }
 
@@ -777,22 +799,14 @@ document.addEventListener("DOMContentLoaded", function() {
             var task = deleted_tasks[index];
             tasks.push(task);
             deleted_tasks.splice(index, 1);
-            
-            var activeSection = document.querySelector(".content-section.active");
-            if (activeSection) {
-                renderCurrentSection(activeSection.id);
-            }
+            updateTasksAndSave();
         }
     }
 
     function permanentlyDeleteTask(index) {
         if (index >= 0 && index < deleted_tasks.length) {
             deleted_tasks.splice(index, 1);
-            
-            var activeSection = document.querySelector(".content-section.active");
-            if (activeSection) {
-                renderCurrentSection(activeSection.id);
-            }
+            updateTasksAndSave();
         }
     }
 
@@ -1158,5 +1172,8 @@ document.addEventListener("DOMContentLoaded", function() {
     // Make functions global so they can be called from onclick attributes
     window.toggleTaskSelection = toggleTaskSelection;
     window.clearFilter = clearFilter;
+
+    // Load tasks from server on page load
+    loadTasksFromServer();
 
 });
