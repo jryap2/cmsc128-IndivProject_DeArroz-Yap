@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://kit.fontawesome.com/d4673b8040.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>My Profile</h1>
+    <h2>Edit Info</h2>
+
+    <!-- Full Name input with icon -->
+    <div class="input-icon">
+      <i class="fa-regular fa-user"></i>
+      <input id="profile-name" type="text" placeholder="Full Name">
+      <div class="input-error" id="error-profile-name"></div>
+    </div>
+
+    <!-- Email input with icon -->
+    <div class="input-icon">
+      <i class="fa-regular fa-envelope"></i>
+      <input id="profile-email" type="text" placeholder="Email">
+      <div class="input-error" id="error-profile-email"></div>
+    </div>
+
+    <!-- Password input with icon and toggle -->
+    <div class="password-container">
+      <i class="fa-solid fa-lock"></i>
+      <input id="profile-password" type="password" placeholder="New Password">
+      <button type="button" class="password-toggle" onclick="togglePassword('profile-password')">
+        <i class="fa-regular fa-eye"></i>
+      </button>
+      <div class="input-error" id="error-profile-password"></div>
+    </div>
+
+    <!-- Action buttons -->
+    <button onclick="updateProfile()">Update Profile</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <!-- Global notification -->
+  <div id="notification"></div>
+
+  <script src="script.js"></script>
+  <script>
+      window.addEventListener('DOMContentLoaded', loadProfile);
+  </script>
+</body>
+</html>
