@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>De Arroz & Yap - To Do List</title>
+    <link rel="stylesheet" href="tdl.css">
+    <script src="https://kit.fontawesome.com/d4673b8040.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</head>
+<body class="tdl-page">
+    <header>
+        <div class="menu-container">
+            <h1 id="menu-title">Menu</h1>
+            <div class="menu-content">
+                <button class="add-task-btn1">
+                    <i class="fa-solid fa-circle-plus fa-lg" style="color: #fb5a04;"></i>
+                    Add task
+                </button>
+                <nav>
+                    <ul>
+                        <li><a href="#" data-target="inbox"><i class="fa-solid fa-inbox"></i>Personal TDL</a></li>
+                        <li><a href="#" data-target="completed-tasks"><i class="fa-solid fa-circle-check" style="color: #27d343;"></i>Completed</a></li>
+                        <li><a href="#" data-target="deleted-tasks"><i class="fa-solid fa-trash" style="color: #f3121d;"></i>Deleted tasks</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#" data-target="collaborative-lists"><i class="fa-solid fa-users" style="color: #3b82f6;"></i>Collaborative Lists</a></li>
+                        <li><a href="#" data-target="profile"><i class="fa-solid fa-user-circle" style="color: #6366f1;"></i>Profile</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="settings-display">
+            <button><i class="fa-solid fa-filter fa-lg" style="color: #6B6C7E;"></i></button>
+            <button><i class="fa-regular fa-circle fa-lg" style="color: #6B6C7E;"></i></button>
+        </div>
+
+        <section id="inbox" class="content-section">
+            <h2>Personal TDL</h2>
+            <div class="inbox-content">
+                <p>Inbox is your go-to spot for quick task entry. Clear your <br>mind now, organize when you're ready.</br></p>
+                <div id="task-list"></div>
+                <button class="add-task-btn2"><i class="fa-solid fa-plus"></i>Add Task</button>
+            </div>
+        </section>
+
+        <section id="completed-tasks" class="content-section" hidden>
+            <h2>Completed tasks</h2>
+            <div class="completed-tasks-content">
+                <p>You don't have any completed tasks yet.</p>
+            </div>
+        </section>
+
+        <section id="deleted-tasks" class="content-section" hidden>
+            <h2>Deleted tasks</h2>
+            <div class="deleted-tasks-content">
+                <p>You don't have any deleted tasks yet.</p>
+            </div>
+        </section>
+
+        <section id="collaborative-lists" class="content-section" hidden>
+            <h2>Collaborative Lists</h2>
+            <div class="collab-content">
+                <div class="collab-header">
+                    <button class="create-collab-btn">
+                        <i class="fa-solid fa-plus"></i> Create New List
+                    </button>
+                </div>
+                <div id="collab-lists-container"></div>
+            </div>
+        </section>
+
+        <section id="collab-detail" class="content-section" hidden>
+            <div class="collab-detail-header">
+                <button class="back-to-collab-btn">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Lists
+                </button>
+                <h2 id="collab-detail-title"></h2>
+                <button class="manage-members-btn">
+                    <i class="fa-solid fa-user-plus"></i> Manage Members
+                </button>
+            </div>
+            <div class="collab-detail-content"></div>
+        </section>
+
+        <section id="profile" class="content-section" hidden>
+            <h2>My Profile</h2>
+            <div class="profile-content">
+                <div class="profile-info">
+                    <div class="input-icon">
+                        <i class="fa-regular fa-user"></i>
+                        <input id="profile-name" type="text" placeholder="Full Name">
+                    </div>
+                    <div class="input-icon">
+                        <i class="fa-regular fa-envelope"></i>
+                        <input id="profile-email" type="text" placeholder="Email" readonly>
+                    </div>
+                    <div class="password-container">
+                        <i class="fa-solid fa-lock"></i>
+                        <input id="profile-password" type="password" placeholder="New Password (optional)">
+                        <button type="button" class="password-toggle" onclick="togglePassword('profile-password')">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+                    <button class="update-profile-btn" onclick="updateProfile()">Update Profile</button>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Task Modal -->
+    <div id="taskModal" class="modal" hidden>
+        <div class="modal-content">
+            <input type="text" id="task-title" placeholder="Enter task title..">
+            <textarea id="task-desc" placeholder="description"></textarea>
+
+            <div class="modal-options">
+                <button type="button" id="task-date-btn">
+                    <i class="fa-regular fa-calendar"></i> Due Date
+                </button>
+
+                <div id="date-picker-dropdown" class="date-dropdown">
+                    <input type="text" id="task-date" placeholder="Select date & time">
+                    <div class="date-picker-actions">
+                        <button id="cancel-date">Cancel</button>
+                        <button id="confirm-date">Confirm</button>
+                    </div>
+                </div>
+
+                <div class="priority-container">
+                    <button type="button" id="task-priority-btn">
+                        <i class="fa-regular fa-flag"></i> Priority
+                    </button>
+                    <div id="priority-menu" class="priority-menu">
+                        <button data-value="High"><i class="fa-regular fa-flag" style="color: #F75A5A"></i> High</button>
+                        <button data-value="Mid"><i class="fa-regular fa-flag" style="color: #F8E067"></i> Mid</button>
+                        <button data-value="Low"><i class="fa-regular fa-flag" style="color: #93E1FF"></i> Low</button>
+                    </div>
+                    <input type="hidden" id="task-priority" value="Mid">
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="cancel-btn">Cancel</button>
+                <button class="save-task-btn">Add Task</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Collaborative List Modal -->
+    <div id="createCollabModal" class="modal" hidden>
+        <div class="modal-content">
+            <h3>Create Collaborative List</h3>
+            <input type="text" id="collab-list-name" placeholder="Enter list name...">
+            <div class="modal-actions">
+                <button class="cancel-collab-btn">Cancel</button>
+                <button class="save-collab-btn">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manage Members Modal -->
+    <div id="manageMembersModal" class="modal" hidden>
+        <div class="modal-content">
+            <h3>Manage Members</h3>
+            <div class="add-member-section">
+                <input type="text" id="member-email" placeholder="Enter email to add...">
+                <button class="add-member-btn">Add Member</button>
+            </div>
+            <div class="members-list">
+                <h4>Current Members:</h4>
+                <div id="current-members"></div>
+            </div>
+            <div class="modal-actions">
+                <button class="close-members-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification"></div>
+    <script src="script.js"></script>
+</body>
+</html>

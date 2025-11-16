@@ -87,7 +87,7 @@ h2 {
 .input-icon input,
 .password-container input {
   width: 100%;
-  padding: 12px 40px 12px 40px; /* right padding for toggle, left for icon */
+  padding: 12px 40px 12px 40px;
   font-size: 0.95rem;
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid #e5e7eb;
