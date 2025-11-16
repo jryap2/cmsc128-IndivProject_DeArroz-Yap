@@ -4,13 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>De Arroz & Yap - To Do List</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://kit.fontawesome.com/d4673b8040.js" crossorigin="anonymous"></script>
-
+    <link rel="stylesheet" href="/css/tdl.css"> <script src="https://kit.fontawesome.com/d4673b8040.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
-<body>
+<body class="tdl-page">
     <header>
         <div class="menu-container">
             <h1 id="menu-title">Menu</h1>
@@ -21,9 +19,11 @@
                 </button>
                 <nav>
                     <ul>
-                        <li><a href="#" data-target="inbox"><i class="fa-solid fa-inbox"></i>Inbox</a></li>
+                        <li><a href="#" data-target="inbox"><i class="fa-solid fa-inbox"></i>Personal TDL</a></li>
                         <li><a href="#" data-target="completed-tasks"><i class="fa-solid fa-circle-check" style="color: #27d343;"></i>Completed</a></li>
                         <li><a href="#" data-target="deleted-tasks"><i class="fa-solid fa-trash" style="color: #f3121d;"></i>Deleted tasks</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#" data-target="profile"><i class="fa-solid fa-user-circle" style="color: #6366f1;"></i>Profile</a></li>
                     </ul>
                 </nav>
             </div>
@@ -37,12 +37,12 @@
         </div>
 
         <section id="inbox" class="content-section">
-            <h2>Inbox</h2>
+            <h2>Personal TDL</h2>
             <div class="inbox-content">
                 <p>Inbox is your go-to spot for quick task entry. Clear your <br>mind now, organize when you're ready.</br></p>
                 <div id="task-list"></div>
                 <button class="add-task-btn2"><i class="fa-solid fa-plus"></i>Add Task</button>
-            <div>
+            </div>
         </section>
 
         <section id="completed-tasks" class="content-section" hidden>
@@ -58,6 +58,31 @@
                 <p>You don't have any deleted tasks yet.</p>
             </div>
         </section>
+
+        <section id="profile" class="content-section" hidden>
+            <h2>My Profile</h2>
+            <div class="profile-content">
+                <div class="profile-info">
+                    <div class="input-icon">
+                        <i class="fa-regular fa-user"></i>
+                        <input id="profile-name" type="text" placeholder="Full Name">
+                    </div>
+                    <div class="input-icon">
+                        <i class="fa-regular fa-envelope"></i>
+                        <input id="profile-email" type="text" placeholder="Email" readonly>
+                    </div>
+                    <div class="password-container">
+                        <i class="fa-solid fa-lock"></i>
+                        <input id="profile-password" type="password" placeholder="New Password (optional)">
+                        <button type="button" class="password-toggle" onclick="togglePassword('profile-password')">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+                    <button class="update-profile-btn" onclick="updateProfile()">Update Profile</button>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </section>
     </main>
 
     <div id="taskModal" class="modal" hidden>
@@ -67,11 +92,11 @@
 
             <div class="modal-options">
                 <button type="button" id="task-date-btn">
-                <i class="fa-regular fa-calendar"></i> Due Date
+                    <i class="fa-regular fa-calendar"></i> Due Date
                 </button>
 
                 <div id="date-picker-dropdown" class="date-dropdown">
-                    <input type="text" id="task-date" placeholder="Select date & time">
+                    <input type="text" id="task-date" placeholder="Select date & time" style="display: none;">
                     <div class="date-picker-actions">
                         <button id="cancel-date">Cancel</button>
                         <button id="confirm-date">Confirm</button>
@@ -87,7 +112,7 @@
                         <button data-value="Mid"><i class="fa-regular fa-flag" style="color: #F8E067"></i> Mid</button>
                         <button data-value="Low"><i class="fa-regular fa-flag" style="color: #93E1FF"></i> Low</button>
                     </div>
-                    <input type="hidden" id="task-priority" value="Mid">
+                    <input type="hidden" id="task-priority" value="">
                 </div>
             </div>
 
@@ -98,6 +123,7 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <div id="notification"></div>
+    <script src="/js/tdl.js" type="module"></script>
 </body>
 </html>
