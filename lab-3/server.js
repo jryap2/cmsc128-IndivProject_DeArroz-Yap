@@ -54,13 +54,13 @@ const DeletedTask = mongoose.model("DeletedTask", DeletedTaskSchema);
 app.post("/api/users/signup", async (req, res) => {
   const { name, email, password } = req.body;
   if (!name || !email || !password) {
-    return res.status(400).json({ error: "All fields are required" });
+    return res.status(400).json({ error: "All fields are required." });
   }
 
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ error: "Email already exists" });
+      return res.status(400).json({ error: "Email already exists." });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -70,7 +70,7 @@ app.post("/api/users/signup", async (req, res) => {
     await newUser.save();
     res.json({ status: "ok", user: newUser });
   } catch (err) {
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ error: "Server error." });
   }
 });
 
@@ -80,12 +80,12 @@ app.post("/api/users/login", async (req, res) => {
   
   const user = await User.findOne({ email });
   if (!user) {
-    return res.status(400).json({ error: "Invalid email or password" });
+    return res.status(400).json({ error: "Invalid email or password." });
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
-    return res.status(400).json({ error: "Invalid email or password" });
+    return res.status(400).json({ error: "Invalid email or password." });
   }
 
   res.json({ status: "ok", user: user });
@@ -98,18 +98,33 @@ app.put("/api/users/:id", async (req, res) => {
   
   try {
     const user = await User.findById(id);
-    if (!user) return res.status(400).json({ error: "User not found" });
+    if (!user) return res.status(400).json({ error: "User not found." });
+    
+    // Check if email is being changed
+    if (email && email !== user.email) {
+      // Check if the new email already exists for another user
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({ error: "Email already exists in another account." });
+      }
+      user.email = email;
+    }
     
     if (name) user.name = name;
-    if (email) user.email = email;
+    
+    // Hash if password is being updated
     if (password) {
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
     }
-
+    
     await user.save();
     res.json({ status: "ok", user });
   } catch (err) {
+    // Check if it's a MongoDB duplicate key error (just in case)
+    if (err.code === 11000) {
+      return res.status(400).json({ error: "Email already exists in another account." });
+    }
     res.status(500).json({ error: "Server error" });
   }
 });
@@ -118,7 +133,7 @@ app.put("/api/users/:id", async (req, res) => {
 app.post("/api/users/check-email", async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
-  if (!user) return res.status(400).json({ error: "Email not found" });
+  if (!user) return res.status(400).json({ error: "Email not found." });
   res.json({ status: "ok" });
 });
 
