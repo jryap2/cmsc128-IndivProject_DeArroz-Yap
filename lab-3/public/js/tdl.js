@@ -88,11 +88,24 @@ async function showSection(id) {
     renderCurrentSection(id);
   } else if (id === 'profile') {
      // Profile section is just HTML, no render needed
+     loadProfileData();
   } else {
     // Default to inbox
     await store.loadTasks(currentUser._id);
     renderCurrentSection('inbox');
   }
+}
+
+// ADDED: New function to load profile data
+function loadProfileData() {
+  const user = getCurrentUser();
+  if (!user) return;
+  
+  const nameInput = document.getElementById('profile-name');
+  const emailInput = document.getElementById('profile-email');
+  
+  if (nameInput) nameInput.value = user.name || '';
+  if (emailInput) emailInput.value = user.email || '';
 }
 
 document.querySelectorAll('nav a').forEach(link => {
