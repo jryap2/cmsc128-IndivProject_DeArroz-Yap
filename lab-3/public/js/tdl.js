@@ -94,3 +94,11 @@ async function showSection(id) {
     renderCurrentSection('inbox');
   }
 }
+
+document.querySelectorAll('nav a').forEach(link => {
+    link.addEventListener('click', () => {
+        const target = link.dataset.target;
+
+        document.body.classList.toggle("profile-view", target === "profile");
+    });
+});

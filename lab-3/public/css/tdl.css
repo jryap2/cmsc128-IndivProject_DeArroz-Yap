@@ -109,6 +109,27 @@ body {
     margin-right: 1vh;
 }
 
+.logout-menu-btn {
+    margin-top: auto; 
+    padding: 10px 15px;
+    font-size: 1rem;
+    background: transparent;
+    border: none;
+    color: #f3121d;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    border-radius: 8px;
+}
+
+.logout-menu-btn:hover {
+    background-color: #d6d6d6; /* same as menu items hover */
+    transform: translateX(5px); /* same sliding effect */
+    color: #f3121d; /* keep the red text */
+}
+
 /* Main content area */
 main {
     flex: 1;
@@ -761,9 +782,11 @@ main p {
 
 /* Profile Section */
 .profile-content {
-    padding-left: 15vh;
-    padding-top: 2vh;
+    padding-left: 10vh;
+    padding-top: 15vh;
     max-width: 500px;
+    position: relative;
+    left: 40vh;
 }
 
 .profile-info {
@@ -799,11 +822,10 @@ main p {
 
 .profile-info i {
     position: absolute;
-    left: 12px;
+    left: 6px;
     top: 50%;
     transform: translateY(-50%);
     color: #888;
-    pointer-events: none;
 }
 
 .profile-info button.password-toggle {
@@ -811,13 +833,17 @@ main p {
     right: 12px;
     top: 50%;
     transform: translateY(-50%);
-    padding: 5px;
+    padding: 5px 10px;
     background: none;
     border: none;
     color: #888;
     font-size: 1rem;
     cursor: pointer;
     z-index: 2;
+}
+
+.profile-info button.password-toggle:hover i {
+    color: #ea580c;
 }
 
 .profile-info .update-profile-btn,
@@ -852,230 +878,10 @@ main p {
     transform: translateY(-2px);
 }
 
-/* Collaborative Lists */
-.collab-content {
-    padding-left: 15vh;
-    padding-top: 2vh;
-    padding-right: 2vh;
+body.profile-view .settings-display {
+    display: none;
 }
 
-.collab-header {
-    margin-bottom: 20px;
-}
-
-.create-collab-btn {
-    padding: 12px 20px;
-    background: #3b82f6;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s ease;
-}
-
-.create-collab-btn:hover {
-    background: #2563eb;
-    transform: translateY(-2px);
-}
-
-#collab-lists-container {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.collab-list-card {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 600px;
-}
-
-.collab-list-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-.collab-list-info h3 {
-    margin: 0 0 8px 0;
-    color: #333;
-    font-size: 18px;
-}
-
-.collab-list-info p {
-    margin: 0;
-    color: #666;
-    font-size: 14px;
-}
-
-.collab-list-meta {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    color: #888;
-    font-size: 14px;
-}
-
-/* Collaborative Detail */
-.collab-detail-header {
-    padding-left: 15vh;
-    padding-right: 2vh;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: 20px;
-}
-
-.back-to-collab-btn {
-    padding: 8px 16px;
-    background: #6c757d;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s ease;
-}
-
-.back-to-collab-btn:hover {
-    background: #5a6268;
-}
-
-#collab-detail-title {
-    flex: 1;
-    margin: 0;
-}
-
-.manage-members-btn {
-    padding: 8px 16px;
-    background: #3b82f6;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s ease;
-}
-
-.manage-members-btn:hover {
-    background: #2563eb;
-}
-
-/* Members Management */
-.add-member-section {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-#member-email {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 14px;
-}
-
-.add-member-btn {
-    padding: 10px 20px;
-    background: #3b82f6;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-.add-member-btn:hover {
-    background: #2563eb;
-}
-
-.members-list h4 {
-    margin: 0 0 10px 0;
-    color: #333;
-    font-size: 16px;
-}
-
-#current-members {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.member-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    background: #f8f9fa;
-    border-radius: 6px;
-}
-
-.member-email {
-    color: #333;
-    font-size: 14px;
-}
-
-.member-role {
-    color: #666;
-    font-size: 12px;
-    background: #e9ecef;
-    padding: 4px 8px;
-    border-radius: 4px;
-}
-
-.remove-member-btn {
-    padding: 4px 12px;
-    background: #dc3545;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-}
-
-.remove-member-btn:hover {
-    background: #c82333;
-}
-
-#notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: #fb923c;
-    color: #fff;
-    padding: 12px 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    opacity: 0;
-    transition: all 0.3s ease;
-    pointer-events: none;
-    font-size: 0.95rem;
-    z-index: 10000;
-}
-
-#notification.success {
-    background-color: #10b981;
-}
-
-#notification.error {
-    background-color: #ef4444;
-}
-
-#notification.show {
-    opacity: 1;
+body.profile-view main {
+    padding-top: 10vh;
 }

@@ -4,19 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>De Arroz & Yap - To Do List</title>
-    <link rel="stylesheet" href="/css/tdl.css"> <script src="https://kit.fontawesome.com/d4673b8040.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/tdl.css">
+    <script src="https://kit.fontawesome.com/d4673b8040.js" crossorigin="anonymous"></script>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
+
 <body class="tdl-page">
     <header>
         <div class="menu-container">
             <h1 id="menu-title">Menu</h1>
+
             <div class="menu-content">
                 <button class="add-task-btn1">
                     <i class="fa-solid fa-circle-plus fa-lg" style="color: #fb5a04;"></i>
                     Add task
                 </button>
+
                 <nav>
                     <ul>
                         <li><a href="#" data-target="inbox"><i class="fa-solid fa-inbox"></i>Personal TDL</a></li>
@@ -26,6 +31,13 @@
                         <li><a href="#" data-target="profile"><i class="fa-solid fa-user-circle" style="color: #6366f1;"></i>Profile</a></li>
                     </ul>
                 </nav>
+
+                <!-- ✅ Logout Button at Bottom -->
+                <button class="logout-menu-btn" onclick="logout()">
+                    <i class="fa-solid fa-right-from-bracket" style="color:#f3121d;"></i>
+                    Logout
+                </button>
+
             </div>
         </div>
     </header>
@@ -67,10 +79,12 @@
                         <i class="fa-regular fa-user"></i>
                         <input id="profile-name" type="text" placeholder="Full Name">
                     </div>
+
                     <div class="input-icon">
                         <i class="fa-regular fa-envelope"></i>
                         <input id="profile-email" type="text" placeholder="Email" readonly>
                     </div>
+
                     <div class="password-container">
                         <i class="fa-solid fa-lock"></i>
                         <input id="profile-password" type="password" placeholder="New Password (optional)">
@@ -78,8 +92,8 @@
                             <i class="fa-regular fa-eye"></i>
                         </button>
                     </div>
+
                     <button class="update-profile-btn" onclick="updateProfile()">Update Profile</button>
-                    <button class="logout-btn" onclick="logout()">Logout</button>
                 </div>
             </div>
         </section>
@@ -107,11 +121,13 @@
                     <button type="button" id="task-priority-btn">
                         <i class="fa-regular fa-flag"></i> Priority
                     </button>
+
                     <div id="priority-menu" class="priority-menu">
                         <button data-value="High"><i class="fa-regular fa-flag" style="color: #F75A5A"></i> High</button>
                         <button data-value="Mid"><i class="fa-regular fa-flag" style="color: #F8E067"></i> Mid</button>
                         <button data-value="Low"><i class="fa-regular fa-flag" style="color: #93E1FF"></i> Low</button>
                     </div>
+
                     <input type="hidden" id="task-priority" value="">
                 </div>
             </div>
@@ -124,6 +140,7 @@
     </div>
 
     <div id="notification"></div>
+
     <script src="/js/tdl.js" type="module"></script>
 </body>
 </html>
