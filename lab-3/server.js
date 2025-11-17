@@ -13,7 +13,6 @@ app.use(express.json());
 // --- 1. DATABASE CONNECTION ---
   mongoose.connect(process.env.MONGODB_URI);
 
-
 // --- 2. USER SCHEMA ---
 const UserSchema = new mongoose.Schema({
   name: String,
