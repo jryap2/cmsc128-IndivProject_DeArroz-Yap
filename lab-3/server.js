@@ -54,13 +54,13 @@ const DeletedTask = mongoose.model("DeletedTask", DeletedTaskSchema);
 app.post("/api/users/signup", async (req, res) => {
   const { name, email, password } = req.body;
   if (!name || !email || !password) {
-    return res.status(400).json({ error: "All fields are required." });
+    return res.status(400).json({ error: "All fields are required" });
   }
 
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ error: "Email already exists." });
+      return res.status(400).json({ error: "Email already exists" });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -70,7 +70,7 @@ app.post("/api/users/signup", async (req, res) => {
     await newUser.save();
     res.json({ status: "ok", user: newUser });
   } catch (err) {
-    res.status(500).json({ error: "Server error." });
+    res.status(500).json({ error: "Server error" });
   }
 });
 
@@ -80,12 +80,12 @@ app.post("/api/users/login", async (req, res) => {
   
   const user = await User.findOne({ email });
   if (!user) {
-    return res.status(400).json({ error: "Invalid email or password." });
+    return res.status(400).json({ error: "Invalid email or password" });
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
-    return res.status(400).json({ error: "Invalid email or password." });
+    return res.status(400).json({ error: "Invalid email or password" });
   }
 
   res.json({ status: "ok", user: user });
@@ -98,33 +98,18 @@ app.put("/api/users/:id", async (req, res) => {
   
   try {
     const user = await User.findById(id);
-    if (!user) return res.status(400).json({ error: "User not found." });
-    
-    // Check if email is being changed
-    if (email && email !== user.email) {
-      // Check if the new email already exists for another user
-      const existingUser = await User.findOne({ email });
-      if (existingUser) {
-        return res.status(400).json({ error: "Email already exists in another account." });
-      }
-      user.email = email;
-    }
+    if (!user) return res.status(400).json({ error: "User not found" });
     
     if (name) user.name = name;
-    
-    // Hash if password is being updated
+    if (email) user.email = email;
     if (password) {
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
     }
-    
+
     await user.save();
     res.json({ status: "ok", user });
   } catch (err) {
-    // Check if it's a MongoDB duplicate key error (just in case)
-    if (err.code === 11000) {
-      return res.status(400).json({ error: "Email already exists in another account." });
-    }
     res.status(500).json({ error: "Server error" });
   }
 });
@@ -133,7 +118,7 @@ app.put("/api/users/:id", async (req, res) => {
 app.post("/api/users/check-email", async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
-  if (!user) return res.status(400).json({ error: "Email not found." });
+  if (!user) return res.status(400).json({ error: "Email not found" });
   res.json({ status: "ok" });
 });
 
@@ -174,30 +159,37 @@ app.get("/api/tasks/:userId", async (req, res) => {
   }
 });
 
-// SAVE TASKS
+// SAVE TASKS (Corrected)
 app.post("/api/tasks/:userId", async (req, res) => {
   const { userId } = req.params;
   const { tasks, completed_tasks, deleted_tasks } = req.body;
   
   try {
-    // Delete all existing tasks for this user
-    await Task.deleteMany({ userId });
+    // 1. Prepare arrays for insert (attaching userId to each object)
+    const tasksToInsert = tasks ? tasks.map(t => ({ ...t, userId })) : [];
+    const completedToInsert = completed_tasks ? completed_tasks.map(t => ({ ...t, userId })) : [];
+    const deletedToInsert = deleted_tasks ? deleted_tasks.map(t => ({ ...t, userId })) : [];
+
+    // 2. Delete all existing tasks for this user (Crucial for atomic save)
+    await Task.deleteMany({ userId }); 
     await CompletedTask.deleteMany({ userId });
     await DeletedTask.deleteMany({ userId });
     
-    // Insert new tasks with userId
-    if (tasks && tasks.length > 0) {
-      await Task.insertMany(tasks.map(t => ({ ...t, userId })));
+    // 3. Insert new tasks
+    if (tasksToInsert.length > 0) {
+      await Task.insertMany(tasksToInsert);
     }
-    if (completed_tasks && completed_tasks.length > 0) {
-      await CompletedTask.insertMany(completed_tasks.map(t => ({ ...t, userId })));
+    if (completedToInsert.length > 0) {
+      await CompletedTask.insertMany(completedToInsert);
     }
-    if (deleted_tasks && deleted_tasks.length > 0) {
-      await DeletedTask.insertMany(deleted_tasks.map(t => ({ ...t, userId })));
+    if (deletedToInsert.length > 0) {
+      await DeletedTask.insertMany(deletedToInsert);
     }
     
     res.json({ status: "ok", message: "Tasks saved successfully" });
   } catch (err) {
+    // Log the error to the console for debugging
+    console.error("Task Save Failed:", err);
     res.status(500).json({ error: "Failed to save tasks" });
   }
 });
