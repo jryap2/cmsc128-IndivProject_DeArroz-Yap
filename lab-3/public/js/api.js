@@ -37,11 +37,11 @@ export function login(email, password) {
   });
 }
 
-export function updateProfile(userId, name, password) {
+export function updateProfile(userId, name, email, password) {
   const body = {};
   if (name) body.name = name;
+  if (email) body.email = email;
   if (password) body.password = password;
-
   return fetchApi(`/users/${userId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
