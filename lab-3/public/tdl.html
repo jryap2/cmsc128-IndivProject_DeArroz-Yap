@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>De Arroz & Yap - To Do List</title>
-    <link rel="stylesheet" href="tdl.css">
-    <script src="https://kit.fontawesome.com/d4673b8040.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/tdl.css"> <script src="https://kit.fontawesome.com/d4673b8040.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
@@ -24,7 +23,6 @@
                         <li><a href="#" data-target="completed-tasks"><i class="fa-solid fa-circle-check" style="color: #27d343;"></i>Completed</a></li>
                         <li><a href="#" data-target="deleted-tasks"><i class="fa-solid fa-trash" style="color: #f3121d;"></i>Deleted tasks</a></li>
                         <li class="divider"></li>
-                        <li><a href="#" data-target="collaborative-lists"><i class="fa-solid fa-users" style="color: #3b82f6;"></i>Collaborative Lists</a></li>
                         <li><a href="#" data-target="profile"><i class="fa-solid fa-user-circle" style="color: #6366f1;"></i>Profile</a></li>
                     </ul>
                 </nav>
@@ -61,31 +59,6 @@
             </div>
         </section>
 
-        <section id="collaborative-lists" class="content-section" hidden>
-            <h2>Collaborative Lists</h2>
-            <div class="collab-content">
-                <div class="collab-header">
-                    <button class="create-collab-btn">
-                        <i class="fa-solid fa-plus"></i> Create New List
-                    </button>
-                </div>
-                <div id="collab-lists-container"></div>
-            </div>
-        </section>
-
-        <section id="collab-detail" class="content-section" hidden>
-            <div class="collab-detail-header">
-                <button class="back-to-collab-btn">
-                    <i class="fa-solid fa-arrow-left"></i> Back to Lists
-                </button>
-                <h2 id="collab-detail-title"></h2>
-                <button class="manage-members-btn">
-                    <i class="fa-solid fa-user-plus"></i> Manage Members
-                </button>
-            </div>
-            <div class="collab-detail-content"></div>
-        </section>
-
         <section id="profile" class="content-section" hidden>
             <h2>My Profile</h2>
             <div class="profile-content">
@@ -112,7 +85,6 @@
         </section>
     </main>
 
-    <!-- Task Modal -->
     <div id="taskModal" class="modal" hidden>
         <div class="modal-content">
             <input type="text" id="task-title" placeholder="Enter task title..">
@@ -124,7 +96,7 @@
                 </button>
 
                 <div id="date-picker-dropdown" class="date-dropdown">
-                    <input type="text" id="task-date" placeholder="Select date & time">
+                    <input type="text" id="task-date" placeholder="Select date & time" style="display: none;">
                     <div class="date-picker-actions">
                         <button id="cancel-date">Cancel</button>
                         <button id="confirm-date">Confirm</button>
@@ -140,7 +112,7 @@
                         <button data-value="Mid"><i class="fa-regular fa-flag" style="color: #F8E067"></i> Mid</button>
                         <button data-value="Low"><i class="fa-regular fa-flag" style="color: #93E1FF"></i> Low</button>
                     </div>
-                    <input type="hidden" id="task-priority" value="Mid">
+                    <input type="hidden" id="task-priority" value="">
                 </div>
             </div>
 
@@ -151,37 +123,7 @@
         </div>
     </div>
 
-    <!-- Create Collaborative List Modal -->
-    <div id="createCollabModal" class="modal" hidden>
-        <div class="modal-content">
-            <h3>Create Collaborative List</h3>
-            <input type="text" id="collab-list-name" placeholder="Enter list name...">
-            <div class="modal-actions">
-                <button class="cancel-collab-btn">Cancel</button>
-                <button class="save-collab-btn">Create</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Manage Members Modal -->
-    <div id="manageMembersModal" class="modal" hidden>
-        <div class="modal-content">
-            <h3>Manage Members</h3>
-            <div class="add-member-section">
-                <input type="text" id="member-email" placeholder="Enter email to add...">
-                <button class="add-member-btn">Add Member</button>
-            </div>
-            <div class="members-list">
-                <h4>Current Members:</h4>
-                <div id="current-members"></div>
-            </div>
-            <div class="modal-actions">
-                <button class="close-members-btn">Close</button>
-            </div>
-        </div>
-    </div>
-
     <div id="notification"></div>
-    <script src="script.js"></script>
+    <script src="/js/tdl.js" type="module"></script>
 </body>
 </html>
