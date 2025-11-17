@@ -1,28 +1,30 @@
+require('dotenv').config();
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require("path");
+const bcrypt = require("bcryptjs"); // <-- 1. IMPORT BCRYPT
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 // --- 1. DATABASE CONNECTION ---
-mongoose.connect(
-  "mongodb+srv://dbUser:123@cmsc128-todolist.gkxtcut.mongodb.net/"
-  // ^^^ REPLACE THIS with your connection string
-);
+  mongoose.connect(process.env.MONGODB_URI);
+
 
 // --- 2. USER SCHEMA ---
 const UserSchema = new mongoose.Schema({
   name: String,
   email: { type: String, unique: true, required: true },
-  password: { type: String, required: true },
+  password: { type: String, required: true }, // This will now store the HASH
 });
 const User = mongoose.model("User", UserSchema);
 
-// --- 3. TASK SCHEMAS (Simplified) ---
-// No 'listId' field. These tasks only belong to a user.
+// --- 3. TASK SCHEMAS ---
+// (Your Task, CompletedTask, and DeletedTask schemas go here)
+// ...
 const TaskSchema = new mongoose.Schema({
   title: String,
   description: String,
@@ -52,6 +54,8 @@ const DeletedTask = mongoose.model("DeletedTask", DeletedTaskSchema);
 
 
 // --- 4. USER API ENDPOINTS ---
+
+// SIGNUP (Modified)
 app.post("/api/users/signup", async (req, res) => {
   const { name, email, password } = req.body;
   if (!name || !email || !password) {
@@ -62,7 +66,13 @@ app.post("/api/users/signup", async (req, res) => {
     if (existingUser) {
       return res.status(400).json({ error: "Email already exists" });
     }
-    const newUser = new User({ name, email, password });
+
+    // --- 2. HASH THE PASSWORD ---
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    // ---
+
+    const newUser = new User({ name, email, password: hashedPassword }); // Save hash
     await newUser.save();
     res.json({ status: "ok", user: newUser });
   } catch (err) {
@@ -70,24 +80,46 @@ app.post("/api/users/signup", async (req, res) => {
   }
 });
 
+// LOGIN (Modified)
 app.post("/api/users/login", async (req, res) => {
   const { email, password } = req.body;
-  const user = await User.findOne({ email, password });
+  
+  // --- 3. COMPARE THE HASH ---
+  // Find user by email first
+  const user = await User.findOne({ email });
   if (!user) {
     return res.status(400).json({ error: "Invalid email or password" });
   }
+
+  // Now compare the plain-text password with the stored hash
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    return res.status(400).json({ error: "Invalid email or password" });
+  }
+  // ---
+
+  // Passwords match!
   res.json({ status: "ok", user: user });
 });
 
+// UPDATE PROFILE (Modified)
 app.put("/api/users/:id", async (req, res) => {
   const { id } = req.params;
   const { name, email, password } = req.body;
   try {
     const user = await User.findById(id);
     if (!user) return res.status(400).json({ error: "User not found" });
+
     if (name) user.name = name;
     if (email) user.email = email;
-    if (password) user.password = password;
+    
+    // --- 4. HASH IF PASSWORD IS BEING UPDATED ---
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(password, salt);
+    }
+    // ---
+    
     await user.save();
     res.json({ status: "ok", user });
   } catch (err) {
@@ -95,6 +127,7 @@ app.put("/api/users/:id", async (req, res) => {
   }
 });
 
+// CHECK EMAIL (No change)
 app.post("/api/users/check-email", async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
@@ -102,6 +135,7 @@ app.post("/api/users/check-email", async (req, res) => {
   res.json({ status: "ok" });
 });
 
+// RESET PASSWORD (Modified)
 app.post("/api/users/reset-password", async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -109,7 +143,12 @@ app.post("/api/users/reset-password", async (req, res) => {
     if (!user) {
       return res.status(400).json({ error: "User not found" });
     }
-    user.password = password; 
+
+    // --- 5. HASH THE NEW PASSWORD ---
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(password, salt);
+    // ---
+    
     await user.save();
     res.json({ status: "ok", message: "Password updated successfully" });
   } catch (err) {
@@ -118,50 +157,10 @@ app.post("/api/users/reset-password", async (req, res) => {
 });
 
 
-// --- 5. TASK API ENDPOINTS (Simplified) ---
-app.get("/api/tasks/:userId", async (req, res) => {
-  try {
-    const { userId } = req.params;
-    const query = { userId: userId }; // Only get tasks for this user
-
-    const tasks = await Task.find(query);
-    const completed_tasks = await CompletedTask.find(query);
-    const deleted_tasks = await DeletedTask.find(query);
-    
-    res.json({ tasks, completed_tasks, deleted_tasks });
-  } catch (err) {
-    res.status(500).json({ error: "Server error" });
-  }
-});
-
-app.post("/api/tasks/:userId", async (req, res) => {
-  try {
-    const { userId } = req.params;
-    const { tasks, completed_tasks, deleted_tasks } = req.body;
-    const query = { userId: userId };
-
-    // Clear previous tasks
-    await Task.deleteMany(query);
-    await CompletedTask.deleteMany(query);
-    await DeletedTask.deleteMany(query);
-    
-    // Add userId to all new tasks
-    const addIds = (task) => ({ ...task, userId: userId });
-
-    if (Array.isArray(tasks) && tasks.length > 0) {
-      await Task.insertMany(tasks.map(addIds));
-    }
-    if (Array.isArray(completed_tasks) && completed_tasks.length > 0) {
-      await CompletedTask.insertMany(completed_tasks.map(addIds));
-    }
-    if (Array.isArray(deleted_tasks) && deleted_tasks.length > 0) {
-      await DeletedTask.insertMany(deleted_tasks.map(addIds));
-    }
-    res.json({ status: "ok" });
-  } catch (err) {
-    res.status(500).json({ error: "Server error" });
-  }
-});
+// --- 5. TASK API ENDPOINTS ---
+// (Your existing task endpoints go here - no changes needed)
+app.get("/api/tasks/:userId", async (req, res) => { /* ... */ });
+app.post("/api/tasks/:userId", async (req, res) => { /* ... */ });
 
 
 // --- 6. SERVE FRONTEND & START SERVER ---
