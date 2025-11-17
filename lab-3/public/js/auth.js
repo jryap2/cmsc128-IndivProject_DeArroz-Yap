@@ -68,18 +68,20 @@ async function loadProfile() {
 async function updateProfile() {
   const currentUser = getCurrentUser();
   if (!currentUser) return;
-
+  
   const name = document.getElementById('profile-name').value.trim();
+  const email = document.getElementById('profile-email').value.trim();
   const password = document.getElementById('profile-password').value;
-
+  
   if (!name) return showNotification('Name cannot be empty.', 'error');
+  if (!isValidEmail(email)) return showNotification('Enter valid email.', 'error');
   if (password && !isValidPasswordLength(password)) {
     return showNotification('Password 8-64 chars.', 'error');
   }
 
   try {
-    const data = await api.updateProfile(currentUser._id, name, password || null);
-    setCurrentUser(data.user); // Update the saved user
+    const data = await api.updateProfile(currentUser._id, name, email, password || null);
+    setCurrentUser(data.user);
     document.getElementById('profile-password').value = '';
     showNotification('Profile updated!', 'success');
   } catch (error) {

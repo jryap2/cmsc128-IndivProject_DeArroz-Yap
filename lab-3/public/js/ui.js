@@ -90,7 +90,7 @@ function renderInboxTasks() {
     `;
 
     const formattedDate = formatDate(task.date);
-    const dateHtml = (formattedDate !== 'Invalid Date') 
+    const dateHtml = (formattedDate && formattedDate !== 'Invalid Date') 
       ? `<span class="due-date"><i class="fa-regular fa-calendar"></i> ${formattedDate}</span>` 
       : '';
 
@@ -154,7 +154,7 @@ function renderCompletedTasks() {
     `;
 
     const formattedDate = formatDate(task.date);
-    const dateHtml = (formattedDate !== 'Invalid Date') 
+    const dateHtml = (formattedDate && formattedDate !== 'Invalid Date') 
       ? `<span class="due-date completed"><i class="fa-regular fa-calendar"></i> ${formattedDate}</span>` 
       : '';
 
@@ -212,7 +212,7 @@ function renderDeletedTasks() {
     `;
     
     const formattedDate = formatDate(task.date);
-    const dateHtml = (formattedDate !== 'Invalid Date')
+    const dateHtml = (formattedDate && formattedDate !== 'Invalid Date')
       ? `<span class="due-date deleted"><i class="fa-regular fa-calendar"></i> ${formattedDate}</span>`
       : '';
 

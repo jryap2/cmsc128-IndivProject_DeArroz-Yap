@@ -172,17 +172,20 @@ a:hover {
 }
 
 #notification {
-  position: absolute;
+  position: fixed;  /* Changed from absolute */
+  top: 20px;        /* Add positioning */
+  right: 20px;      /* Add positioning */
   background: #fb923c;
   color: #fff;
   padding: 10px 16px;
   border-radius: 6px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   opacity: 0;
+  transform: translateY(-20px);  /* Start above */
   transition: all 0.3s ease;
   pointer-events: none;
   font-size: 0.9rem;
-  z-index: 1000;
+  z-index: 99999;  /* Very high to appear above everything */
 }
 
 #notification.success {
@@ -195,5 +198,5 @@ a:hover {
 
 #notification.show {
   opacity: 1;
-  transform: translateY(20px); /* Or just 'opacity: 1;' */
+  transform: translateY(0);  /* Slide down to position */
 }

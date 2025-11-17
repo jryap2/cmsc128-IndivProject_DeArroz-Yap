@@ -885,3 +885,37 @@ body.profile-view .settings-display {
 body.profile-view main {
     padding-top: 10vh;
 }
+
+#notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #fb923c;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all 0.3s ease;
+  pointer-events: none;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 99999;
+  min-width: 200px;
+  text-align: center;
+}
+
+#notification.success {
+  background-color: #4CAF50;
+}
+
+#notification.error {
+  background-color: #ef4444;
+}
+
+#notification.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
