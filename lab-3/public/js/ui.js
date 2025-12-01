@@ -85,6 +85,7 @@ function renderInboxTasks() {
       : '';
 
     const actionButtons = selectionMode ? '' : `
+      <button class="delete-inbox-button" data-index="${actualIndex}"><i class="fa-solid fa-trash"></i></button>
       <button class="edit-button" data-index="${actualIndex}"><i class="fa-solid fa-pen-to-square"></i></button>
       <button class="confirm-complete-btn" data-index="${actualIndex}"><i class="fa-regular fa-circle-check"></i></button>
     `;
@@ -106,6 +107,7 @@ function renderInboxTasks() {
     contentDiv.appendChild(taskDiv);
 
     if (!selectionMode) {
+      taskDiv.querySelector('.delete-inbox-button')?.addEventListener('click', () => onDeleteTask(actualIndex, false));
       taskDiv.querySelector('.edit-button')?.addEventListener('click', () => openModalForTask(task, actualIndex));
       taskDiv.querySelector('.confirm-complete-btn')?.addEventListener('click', () => onCompleteTask(actualIndex));
     }
@@ -117,6 +119,14 @@ function renderInboxTasks() {
     addTaskBtn.innerHTML = '<i class="fa-solid fa-plus" style="color: #FF621C;"></i> Add Task';
     addTaskBtn.addEventListener('click', () => openModalForTask());
     contentDiv.appendChild(addTaskBtn);
+  }
+}
+
+async function onRevertTask(index) {
+  if (index >= 0 && index < store.completed_tasks.length) {
+    store.addTask(store.completed_tasks.splice(index, 1)[0]);
+    await store.saveTasks();
+    render();
   }
 }
 
@@ -147,6 +157,9 @@ function renderCompletedTasks() {
 
     const actionButtons = selectionMode ? '' : `
       <div class="completed-task-actions">
+        <button class="revert-button" data-index="${actualIndex}" title="Revert to inbox">
+          <i class="fa-solid fa-undo"></i>
+        </button>
         <button class="delete-button" data-index="${actualIndex}" title="Move to deleted tasks">
           <i class="fa-solid fa-trash"></i>
         </button>
@@ -170,6 +183,7 @@ function renderCompletedTasks() {
     contentDiv.appendChild(taskDiv);
 
     if (!selectionMode) {
+      taskDiv.querySelector('.revert-button')?.addEventListener('click', () => onRevertTask(actualIndex));
       taskDiv.querySelector('.delete-button')?.addEventListener('click', () => onDeleteTask(actualIndex, true));
     }
   });
