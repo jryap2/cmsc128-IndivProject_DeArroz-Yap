@@ -515,7 +515,7 @@ main p {
 .edit-button {
     position: absolute;
     top: 12px;
-    right: 16px;
+    right: 50px;
     font-size: 18px;
     background: none;
     border: none;
@@ -529,6 +529,30 @@ main p {
 .edit-button:hover i {
     color: #FF621C;
     transform: scale(1.1);
+}
+
+.delete-inbox-button {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 18px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    transition: background 0.2s ease;
+    opacity: 0;
+    color: #495057;
+}
+
+.delete-inbox-button:hover i {
+    color: #dd0d09;
+    transform: scale(1.1);
+}
+
+.task-item:hover .delete-inbox-button {
+    opacity: 1;
 }
 
 .task-item:hover .edit-button {
@@ -709,6 +733,15 @@ main p {
     border-radius: 4px;
 }
 
+.task-actions .btn-icon.revert {
+  color: #4CAF50;
+}
+
+.task-actions .btn-icon.revert:hover {
+  background-color: rgba(76, 175, 80, 0.1);
+}
+
+
 .no-results {
     text-align: center;
     padding: 40px 20px;
@@ -733,23 +766,33 @@ main p {
     position: relative;
 }
 
-.delete-button {
-    color: #495057;
-    border: none;
-    cursor: pointer;
-    background: none;
+.completed-task-actions {
     position: absolute;
-    top: 10px;
+    top: 12px;
     right: 16px;
     display: flex;
     gap: 10px;
-    font-size: 18px;
-    transition: transform 0.2s;
 }
 
-.delete-button:hover {
-    transform: translateY(-3px);
+.completed-task-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    transition: background 0.2s, color 0.2s, transform 0.2s;
+    font-size: 18px;
+    color: #495057;
+}
+
+.completed-task-actions .revert-button:hover i {
+    color: #26a72a;
+    transform: scale(1.1);
+}
+
+.completed-task-actions .delete-button:hover i {
     color: #dd0d09;
+    transform: scale(1.1);
 }
 
 .deleted-task-actions-container {
