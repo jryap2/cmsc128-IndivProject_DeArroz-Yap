@@ -1,7 +1,7 @@
 // js/api.js
 // This file handles all communication with your backend server.
 
-const BASE_URL = "https://todo-backend-rppp.onrender.com/"; 
+const BASE_URL = "/api"; 
 
 async function fetchApi(endpoint, options = {}) {
   try {
