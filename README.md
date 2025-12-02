@@ -2,7 +2,7 @@
 
 ## Summary
 
-This is a full-stack To-Do List application built with a **Node.js (Express)** backend and **MongoDB Atlas** for data storage. It features full user authentication and complete CRUD (Create, Read, Update, Delete) functionality for task management. The entire application, including the HTML/CSS/JS frontend, is deployed as a single service on **Render**.
+This is a full-stack To-Do List application built with a **Node.js (Express)** backend and **MongoDB Atlas** for data storage. It features full user authentication and complete Create, Read, Update, Delete functionality for task management. The entire application, including the HTML/CSS/JS frontend, is deployed as a single service on **Render**.
 
 ## Example API endpoints
 |**POST** | `/api/users/signup` | Register a new user. | , **GET** | `/api/tasks` | Retrieve all tasks for the logged-in user. | ,  **DELETE** | `/api/tasks/:id` | Delete a specific task. |
