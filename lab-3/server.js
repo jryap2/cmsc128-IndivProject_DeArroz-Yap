@@ -20,33 +20,23 @@ const UserSchema = new mongoose.Schema({
 });
 const User = mongoose.model("User", UserSchema);
 
-// --- 3. TASK SCHEMAS ---
+// --- 3. UNIFIED TASK SCHEMA ---
+// Optimized: One collection for all states using a 'status' field.
 const TaskSchema = new mongoose.Schema({
   title: String,
   description: String,
   date: String,
   priority: String,
-  userId: { type: String, required: true }, // changed to string
+  userId: { type: String, required: true, index: true }, // Added index for speed
+  status: { 
+    type: String, 
+    enum: ['inbox', 'completed', 'deleted'], 
+    default: 'inbox' 
+  },
+  createdAt: { type: Date, default: Date.now }
 });
+
 const Task = mongoose.model("Task", TaskSchema);
-
-const CompletedTaskSchema = new mongoose.Schema({
-  title: String,
-  description: String,
-  date: String,
-  priority: String,
-  userId: { type: String, required: true }, // changed to string
-});
-const CompletedTask = mongoose.model("CompletedTask", CompletedTaskSchema);
-
-const DeletedTaskSchema = new mongoose.Schema({
-  title: String,
-  description: String,
-  date: String,
-  priority: String,
-  userId: { type: String, required: true }, // changed to string
-});
-const DeletedTask = mongoose.model("DeletedTask", DeletedTaskSchema);
 
 // --- 4. USER API ENDPOINTS ---
 
@@ -142,55 +132,55 @@ app.post("/api/users/reset-password", async (req, res) => {
   }
 });
 
-// --- 5. TASK API ENDPOINTS ---
+// --- 5. TASK API ENDPOINTS (RESTful) ---
 
-// GET TASKS
+// GET ALL TASKS (Optimized)
 app.get("/api/tasks/:userId", async (req, res) => {
-  const { userId } = req.params;
-  
   try {
-    const tasks = await Task.find({ userId });
-    const completed_tasks = await CompletedTask.find({ userId });
-    const deleted_tasks = await DeletedTask.find({ userId });
+    // Fetch all tasks for user, sorted by creation (newest first)
+    const allTasks = await Task.find({ userId: req.params.userId }).sort({ createdAt: -1 });
     
-    res.json({ tasks, completed_tasks, deleted_tasks });
+    // The frontend will filter them into arrays, or we can send them grouped.
+    // Sending flat list is faster for DB.
+    res.json({ tasks: allTasks }); 
   } catch (err) {
     res.status(500).json({ error: "Failed to load tasks" });
   }
 });
 
-// SAVE TASKS (Corrected)
-app.post("/api/tasks/:userId", async (req, res) => {
-  const { userId } = req.params;
-  const { tasks, completed_tasks, deleted_tasks } = req.body;
-  
+// CREATE ONE TASK
+app.post("/api/tasks", async (req, res) => {
   try {
-    // 1. Prepare arrays for insert (attaching userId to each object)
-    const tasksToInsert = tasks ? tasks.map(t => ({ ...t, userId })) : [];
-    const completedToInsert = completed_tasks ? completed_tasks.map(t => ({ ...t, userId })) : [];
-    const deletedToInsert = deleted_tasks ? deleted_tasks.map(t => ({ ...t, userId })) : [];
-
-    // 2. Delete all existing tasks for this user (Crucial for atomic save)
-    await Task.deleteMany({ userId }); 
-    await CompletedTask.deleteMany({ userId });
-    await DeletedTask.deleteMany({ userId });
-    
-    // 3. Insert new tasks
-    if (tasksToInsert.length > 0) {
-      await Task.insertMany(tasksToInsert);
-    }
-    if (completedToInsert.length > 0) {
-      await CompletedTask.insertMany(completedToInsert);
-    }
-    if (deletedToInsert.length > 0) {
-      await DeletedTask.insertMany(deletedToInsert);
-    }
-    
-    res.json({ status: "ok", message: "Tasks saved successfully" });
+    const newTask = new Task(req.body);
+    await newTask.save();
+    res.json(newTask);
   } catch (err) {
-    // Log the error to the console for debugging
-    console.error("Task Save Failed:", err);
-    res.status(500).json({ error: "Failed to save tasks" });
+    res.status(500).json({ error: "Failed to add task" });
+  }
+});
+
+// UPDATE ONE TASK (Updates content OR status)
+app.put("/api/tasks/:id", async (req, res) => {
+  try {
+    // This handles editing text AND moving between Inbox/Completed/Deleted
+    const updatedTask = await Task.findByIdAndUpdate(
+      req.params.id, 
+      { $set: req.body }, 
+      { new: true } // Return the updated document
+    );
+    res.json(updatedTask);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update task" });
+  }
+});
+
+// DELETE ONE TASK (Permanent delete)
+app.delete("/api/tasks/:id", async (req, res) => {
+  try {
+    await Task.findByIdAndDelete(req.params.id);
+    res.json({ message: "Task deleted permanently" });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete task" });
   }
 });
 

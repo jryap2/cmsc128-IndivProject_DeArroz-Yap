@@ -65,24 +65,31 @@ export function resetPassword(email, password) {
   });
 }
 
-
-// --- TASK API (MODIFIED) ---
+// --- TASK API (OPTIMIZED) ---
 
 export function getTasks(userId) {
-  let endpoint = `/tasks/${userId}`;
-  return fetchApi(endpoint);
+  return fetchApi(`/tasks/${userId}`);
 }
 
-export function saveTasks(userId, tasks, completed_tasks, deleted_tasks) {
-  return fetchApi(`/tasks/${userId}`, {
+export function createTask(taskData) {
+  return fetchApi("/tasks", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      // No listId
-      tasks,
-      completed_tasks,
-      deleted_tasks
-    }),
+    body: JSON.stringify(taskData),
+  });
+}
+
+export function updateTask(taskId, updates) {
+  return fetchApi(`/tasks/${taskId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updates),
+  });
+}
+
+export function deleteTask(taskId) {
+  return fetchApi(`/tasks/${taskId}`, {
+    method: "DELETE",
   });
 }
 
