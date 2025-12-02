@@ -185,7 +185,7 @@ app.delete("/api/tasks/:id", async (req, res) => {
 });
 
 // --- 6. SERVE FRONTEND & START SERVER ---
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "lab-3/public")));
 
 app.use((req, res) => {
     res.sendFile(path.join(__dirname, "public", "index.html"));
