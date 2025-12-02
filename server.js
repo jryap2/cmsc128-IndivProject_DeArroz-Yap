@@ -185,7 +185,6 @@ app.delete("/api/tasks/:id", async (req, res) => {
 });
 
 // --- 6. SERVE FRONTEND & START SERVER ---
-const path = require("path");
 app.use(express.static(path.join(__dirname, "public")));
 
 const PORT = process.env.PORT || 5000;
