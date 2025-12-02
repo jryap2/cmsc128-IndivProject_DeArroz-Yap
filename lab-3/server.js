@@ -26,7 +26,7 @@ const TaskSchema = new mongoose.Schema({
   description: String,
   date: String,
   priority: String,
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  userId: { type: String, required: true }, // changed to string
 });
 const Task = mongoose.model("Task", TaskSchema);
 
@@ -35,7 +35,7 @@ const CompletedTaskSchema = new mongoose.Schema({
   description: String,
   date: String,
   priority: String,
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  userId: { type: String, required: true }, // changed to string
 });
 const CompletedTask = mongoose.model("CompletedTask", CompletedTaskSchema);
 
@@ -44,7 +44,7 @@ const DeletedTaskSchema = new mongoose.Schema({
   description: String,
   date: String,
   priority: String,
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  userId: { type: String, required: true }, // changed to string
 });
 const DeletedTask = mongoose.model("DeletedTask", DeletedTaskSchema);
 
