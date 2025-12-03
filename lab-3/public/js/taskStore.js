@@ -97,7 +97,7 @@ export async function restoreTask(index) {
   // Local move
   deleted_tasks.splice(index, 1);
   task.status = 'inbox';
-  tasks.unshift(task);
+  tasks.push(task);
 
   // Sync: Change status on DB
   try {

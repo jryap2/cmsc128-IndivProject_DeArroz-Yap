@@ -253,24 +253,20 @@ function renderDeletedTasks() {
 
 // --- TASK ACTION HANDLERS ---
 async function onCompleteTask(index) {
-  store.completeTask(index);
-  await store.saveTasks();
+  await store.saveTasks(index);
   render();
 }
 async function onDeleteTask(index, fromCompleted = false) {
-  store.deleteTask(index, fromCompleted);
-  await store.saveTasks();
+  await store.saveTasks(index, fromCompleted);
   render();
 }
 async function onRestoreTask(index) {
-  store.restoreTask(index);
-  await store.saveTasks();
+  await store.saveTasks(index);
   render();
 }
 async function onPermDeleteTask(index) {
   if (confirm('Are you sure you want to permanently delete this task? This action cannot be undone.')) {
-    store.permanentlyDeleteTask(index);
-    await store.saveTasks();
+    await store.saveTasks(index);
     render();
   }
 }
