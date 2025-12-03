@@ -74,6 +74,23 @@ export async function completeTask(index) {
   } catch (err) { console.error(err); }
 }
 
+export async function revertTask(index) {
+  const task = completed_tasks[index];
+  if (!task || !task._id) return;
+
+  // 1. Local move
+  completed_tasks.splice(index, 1); // Remove from Completed
+  task.status = 'inbox';
+  tasks.push(task); // Add to Inbox (Bottom)
+
+  // 2. Sync with API
+  try {
+    await api.updateTask(task._id, { status: 'inbox' });
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 export async function deleteTask(index, fromCompleted = false) {
   const sourceList = fromCompleted ? completed_tasks : tasks;
   const task = sourceList[index];

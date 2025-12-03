@@ -252,21 +252,30 @@ function renderDeletedTasks() {
 
 
 // --- TASK ACTION HANDLERS ---
-async function onCompleteTask(index) {
-  await store.saveTasks(index);
+export async function onCompleteTask(index) {
+  await store.completeTask(index); 
+  // DO NOT call store.saveTasks() here!
   render();
 }
-async function onDeleteTask(index, fromCompleted = false) {
-  await store.saveTasks(index, fromCompleted);
+
+export async function onDeleteTask(index, fromCompleted = false) {
+  await store.deleteTask(index, fromCompleted);
   render();
 }
-async function onRestoreTask(index) {
-  await store.saveTasks(index);
+
+export async function onRevertTask(index) {
+  await store.revertTask(index); // This now works because we added it to taskStore.js
   render();
 }
-async function onPermDeleteTask(index) {
-  if (confirm('Are you sure you want to permanently delete this task? This action cannot be undone.')) {
-    await store.saveTasks(index);
+
+export async function onRestoreTask(index) {
+  await store.restoreTask(index);
+  render();
+}
+
+export async function onPermDeleteTask(index) {
+  if (confirm('Are you sure you want to permanently delete this task?')) {
+    await store.permanentlyDeleteTask(index);
     render();
   }
 }
