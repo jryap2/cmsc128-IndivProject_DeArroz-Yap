@@ -358,13 +358,14 @@ export async function onSaveTask() {
   };
 
   const editIndex = saveTaskBtn.dataset.editIndex;
+  
+  // FIX 1: Add 'await' to these calls so the code pauses until the DB confirms success
   if (editIndex !== undefined) {
-    store.updateTask(parseInt(editIndex, 10), task);
+    await store.updateTask(parseInt(editIndex, 10), task); // <--- Add await
   } else {
-    store.addTask(task);
+    await store.addTask(task); // <--- Add await
   }
 
-  await store.saveTasks();
   render();
   
   modal.classList.remove('show');
