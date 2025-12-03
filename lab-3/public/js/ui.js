@@ -122,13 +122,7 @@ function renderInboxTasks() {
   }
 }
 
-async function onRevertTask(index) {
-  if (index >= 0 && index < store.completed_tasks.length) {
-    store.addTask(store.completed_tasks.splice(index, 1)[0]);
-    await store.saveTasks();
-    render();
-  }
-}
+// REMOVED onRevertTask here as it's cleaner to have all handlers together at bottom
 
 function renderCompletedTasks() {
   const section = document.getElementById('completed-tasks');
@@ -253,8 +247,7 @@ function renderDeletedTasks() {
 
 // --- TASK ACTION HANDLERS ---
 export async function onCompleteTask(index) {
-  await store.completeTask(index); 
-  // DO NOT call store.saveTasks() here!
+  await store.completeTask(index);
   render();
 }
 
@@ -264,7 +257,7 @@ export async function onDeleteTask(index, fromCompleted = false) {
 }
 
 export async function onRevertTask(index) {
-  await store.revertTask(index); // This now works because we added it to taskStore.js
+  await store.revertTask(index);
   render();
 }
 
@@ -274,7 +267,7 @@ export async function onRestoreTask(index) {
 }
 
 export async function onPermDeleteTask(index) {
-  if (confirm('Are you sure you want to permanently delete this task?')) {
+  if (confirm('Are you sure you want to permanently delete this task? This action cannot be undone.')) {
     await store.permanentlyDeleteTask(index);
     render();
   }
@@ -364,13 +357,13 @@ export async function onSaveTask() {
 
   const editIndex = saveTaskBtn.dataset.editIndex;
   
-  // FIX 1: Add 'await' to these calls so the code pauses until the DB confirms success
   if (editIndex !== undefined) {
-    await store.updateTask(parseInt(editIndex, 10), task); // <--- Add await
+    await store.updateTask(parseInt(editIndex, 10), task);
   } else {
-    await store.addTask(task); // <--- Add await
+    await store.addTask(task);
   }
-
+  
+  // Render happens immediately after await returns (DB confirm)
   render();
   
   modal.classList.remove('show');
@@ -602,9 +595,9 @@ function addSelectionToolbarListeners(toolbar) {
   toolbar.querySelector('.complete-selected')?.addEventListener('click', async () => {
     const indices = Array.from(selectedTasks).sort((a, b) => b - a);
     for (const index of indices) {
-      store.completeTask(index);
+      await store.completeTask(index);
     }
-    await store.saveTasks();
+    // await store.saveTasks(); <-- REMOVED
     exitSelectionMode();
   });
   
@@ -612,35 +605,33 @@ function addSelectionToolbarListeners(toolbar) {
     const fromCompleted = (currentSection === 'completed-tasks');
     const indices = Array.from(selectedTasks).sort((a, b) => b - a);
     for (const index of indices) {
-      store.deleteTask(index, fromCompleted);
+      await store.deleteTask(index, fromCompleted);
     }
-    await store.saveTasks();
+    // await store.saveTasks(); <-- REMOVED
     exitSelectionMode();
   });
 
   toolbar.querySelector('.revert-selected')?.addEventListener('click', async () => {
     const indices = Array.from(selectedTasks).sort((a, b) => b - a);
     for (const index of indices) {
-      if (index >= 0 && index < store.completed_tasks.length) {
-        store.addTask(store.completed_tasks.splice(index, 1)[0]);
-      }
+       await store.revertTask(index);
     }
-    await store.saveTasks();
+    // await store.saveTasks(); <-- REMOVED
     exitSelectionMode();
   });
 
   toolbar.querySelector('.recover-selected')?.addEventListener('click', async () => {
     const indices = Array.from(selectedTasks).sort((a, b) => b - a);
-    for (const index of indices) store.restoreTask(index);
-    await store.saveTasks();
+    for (const index of indices) await store.restoreTask(index);
+    // await store.saveTasks(); <-- REMOVED
     exitSelectionMode();
   });
 
   toolbar.querySelector('.permanent-delete-selected')?.addEventListener('click', async () => {
     if (confirm(`Are you sure you want to permanently delete ${selectedTasks.size} task(s)?`)) {
       const indices = Array.from(selectedTasks).sort((a, b) => b - a);
-      for (const index of indices) store.permanentlyDeleteTask(index);
-      await store.saveTasks();
+      for (const index of indices) await store.permanentlyDeleteTask(index);
+      // await store.saveTasks(); <-- REMOVED
       exitSelectionMode();
     }
   });
